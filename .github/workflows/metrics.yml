@@ -1,0 +1,33 @@
+name: Metrics
+
+on:
+  # Refresh every day at 03:00 UTC
+  schedule:
+    - cron: "0 3 * * *"
+  # Allows you to run it manually from the Actions tab
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  calendar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: lowlighter/metrics@latest
+        with:
+          # Personal access token stored in repository secrets (see setup steps)
+          token: ${{ secrets.METRICS_TOKEN }}
+          # Special token used to commit the generated image
+          committer_token: ${{ github.token }}
+          user: KaoutarMD
+          template: classic
+          filename: metrics-calendar.svg
+          base: ""
+          config_timezone: Africa/Casablanca
+          plugin_isocalendar: yes
+          plugin_isocalendar_duration: full-year
